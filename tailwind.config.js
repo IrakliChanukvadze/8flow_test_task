@@ -18,6 +18,16 @@ module.exports = {
       fontFamily: {
         inter: ['var(--font-inter)', 'sans-serif'],
       },
+      //add really basic animation to show and hide toast
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 500ms ease-in-out',
+      },
       fontSize: {
         xs: ['0.75rem', { lineHeight: '1.5' }],
         sm: ['0.875rem', { lineHeight: '1.5715' }],

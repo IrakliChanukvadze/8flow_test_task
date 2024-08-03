@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext } from 'react';
-import { ToastType } from './types';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { ToastType, ToastInput } from './types';
+import { Toast } from '@/components/Toast';
 
 interface ToastProps {
   renderToast: (type: ToastType, message: string) => void;
@@ -8,16 +9,24 @@ interface ToastProps {
 const ToastContext = createContext<ToastProps | null>(null);
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
-  // eslint-disable-next-line
+  const [toastData, setToastData] = useState<ToastInput | null>();
   const renderToast = useCallback((type: ToastType, message: string) => {
-    console.error('TODO: implement the renderToast(type, message)');
+    setToastData({ type, body: message });
+    setTimeout(() => {
+      setToastData(null);
+    }, 3000);
   }, []);
 
+  const values = useMemo(
+    () => ({
+      renderToast,
+    }),
+    [renderToast],
+  );
+
   return (
-    <ToastContext.Provider
-      value={{
-        renderToast,
-      }}>
+    <ToastContext.Provider value={values}>
+      {toastData && <Toast {...toastData} />}
       {children}
     </ToastContext.Provider>
   );
@@ -25,8 +34,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
 export const useToastContext = () => {
   const context = useContext(ToastContext);
+
   if (!context) {
     throw new Error('useToastContext must be used within a ToastProvider');
   }
+
   return context;
 };
